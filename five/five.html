@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>五子棋</title>
+    <meta name="description" content="">
+    <meta name="Author" content="wuhuan">
+    <meta name="keywords" content="">
+    <link href="" rel="stylesheet">
+    <style>
+        * {margin: 0;padding: 0}
+        ul li {list-style: none;}
+/*        p{
+            display: none;
+        }*/
+        .clearfix:after {
+            display: block;
+            content: '';
+            clear: both;
+        }
+        #wrap {
+            position: relative;
+            margin: 50px auto;
+            border: 1px solid red;
+            width: 600px;
+            height: 600px;
+            user-select: none;
+        }
+        #box {
+            position: relative;
+            margin: auto;
+            padding: 15px;
+            width: 421px;
+            height: 421px;
+            border: 1px solid black;
+        }
+        #box #chess-box {
+            border-bottom: 1px solid #000;
+            border-right: 1px solid #000;
+        }
+        #box ul li {
+            float: left;
+        }
+        #box #chess-box li {
+            width: 29px;
+            height: 29px;
+            border-top: 1px  solid #000;
+            border-left: 1px solid #000;
+        }
+        #box #points,#box #result {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        #box #points ul li {
+            width: 30px;
+            height: 30px;
+        }
+/*        #wrap #reset {
+            display: block;
+            margin: 50px auto;
+        }*/
+        #wrap .btn{
+            position: absolute;
+            right: 0;
+            width: 60px;
+            height: 30px;
+        }
+        #wrap #reset {
+            top: 50px;
+        }
+        #wrap #back {
+            top: 100px;
+        }
+        #wrap #cancel {
+            top: 150px;
+        }
+        #result {
+            display: none;
+            background-color: rgba(0,0,0,.5);
+        }
+        #result p{
+            display: block;
+            height: 70px;
+            margin-top: 100px;
+            text-align: center;
+            font-weight: bold;
+            color: red;
+            font-size: 50px;
+            line-height: 70px;
+        }
+        #result button{
+            display: block;
+            margin: 100px auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrap">
+        <div id="box">
+            <ul id="chess-box" class="clearfix">
+            </ul>
+            <div id="points"></div>
+            <div id="result">
+                <p></p>
+                <button id="again">再来一局</button>
+            </div>
+        </div>
+        <button id="reset" class="btn">重新开始</button>
+        <button id="back" class="btn">悔棋</button>
+        <button id="cancel" class="btn">撤销悔棋</button>
+    </div>
+</body>
+<script type="text/javascript">
+    var oBox = document.querySelector('#box');
+    var chessBox = document.querySelector('#box ul');
+    var oPoints = document.querySelector('#points');
+    var oReset = document.querySelector('#wrap #reset');
+    var oP = document.getElementsByTagName('p')[0];
+    var oResult = document.querySelector('#result');
+    var oAgain = document.querySelector('#again');
+    var oBack = document.querySelector('#back');
+    var oCancel = document.querySelector('#cancel');
+    var arr = [];// 保存每次的棋子坐标
+    var backup = [];// 保存悔棋的棋子坐标
+    var contents = [];// 保存悔棋的棋子内容
+    var back_tag = false;
+    var cancel_tag = false;
+
+    var flag = true;//判断该位置是黑子还是白子，默认白子先下
+
+    var w=b=1;// 用来统计连续相同棋子数
+    var num=0;// 统计棋盘上的棋子数
+
+    // 生成棋盘
+    for(var i=0;i<14*14;i++) {
+        var oLi = document.createElement('li');
+        chessBox.appendChild(oLi);
+    }
+
+    // 生成放棋子的格子
+    for(var i=0;i<15;i++) {
+
+        var oUl = document.createElement('ul');
+        oPoints.appendChild(oUl);
+        for(var j=0;j<15;j++) {
+            var oLi = document.createElement('li');
+            oLi.x = j;// 保存x方向坐标
+            oLi.y = i;// 保存y方向坐标
+            oLi.onoff = true;//判断该位置是否可下棋子
+            oUl.appendChild(oLi);
+            oLi.onmouseup = function() {
+                if(this.onoff) {
+                    this.onoff = false;
+                    var oImg = new Image();
+                    if (flag) {
+                        oImg.src = 'imges/white.jpg';
+                        this.tag = 'w';
+                    }else{
+                        oImg.src = 'imges/black.jpg';
+                        this.tag = 'b';
+                    }
+                    flag = !flag;
+                    oImg.width = 30;
+                    oImg.height = 30;
+                    oImg.style.userSelect = 'none';
+                    this.appendChild(oImg);
+                    num++;
+                    arr.push([this.x,this.y]);
+                    contents = [];
+                    backup = [];// 只要有新的棋子被下，则可撤销的悔棋就被清空
+                    console.log(arr,num);
+                    fn(this.x,this.y);
+                }else{
+                    console.log('ok');
+                }
+
+            }
+        }
+    }
+
+    // 检测是否有五子相连的情况
+    function fn(x,y) {
+        var tag = oPoints.children[y].children[x].tag;//获取当前棋子的颜色
+        var stepX = x,stepY = y;// 设置所需检测的棋子初始坐标
+        // 横向检测
+        for(var i=0;i<15;i++){
+            stepX++;
+            if(stepX<15){
+                if(oPoints.children[y].children[stepX].tag===tag){
+                    if(tag==='w'){
+                        w++;
+                        if(w===5){
+                            oP.innerText = 'WHITE WIN!';
+                            oResult.style.display = 'block';
+                            console.log(1);
+                        }
+                    }else{
+                        b++;
+                        if(b===5){
+                            oP.innerText = 'BLACK WIN!';
+                            oResult.style.display = 'block';
+                            console.log(2);
+                        }
+                    }
+                }else{//当检测到不一样tag值的坐标，则跳出循环
+                    break;
+                }
+            }else{// 当到达棋盘边界，跳出循环
+                break;
+            }
+        }
+        stepX = x;
+        for(var i=0;i<15;i++){
+            stepX--;
+            if(stepX>=0){
+                if(oPoints.children[y].children[stepX].tag===tag){
+                    if(tag==='w'){
+                        w++;
+                        if(w===5){
+                            oP.innerText = 'WHITE WIN!';
+                            oResult.style.display = 'block';
+                            console.log(3);
+                        }
+                    }else{
+                        b++;
+                        if(b===5){
+                            oP.innerText = 'BLACK WIN!';
+                            oResult.style.display = 'block';
+                            console.log(4);
+                        }
+                    }
+                }else{// 当检测到不一样的tag值时，并且没有五子相连，跳出循环并初始化统计位（w、b）
+                    tag_reset();
+                    break;
+                }
+            }else{// 当再次到达棋盘边界，还没有检测到五子相连，则跳出循环并初始化统计位（w、b）
+                tag_reset();
+                break;
+            }
+        }
+
+        // 纵向检测
+        for(var i=0;i<15;i++){
+            stepY++;
+            if(stepY<15){
+                if(oPoints.children[stepY].children[x].tag===tag){
+                    if(tag==='w'){
+                        w++;
+                        if(w===5){
+                            oP.innerText = 'WHITE WIN!';
+                            oResult.style.display = 'block';
+                            console.log(5);
+                        }
+                    }else{
+                        b++;
+                        if(b===5){
+                            oP.innerText = 'BLACK WIN!';
+                            oResult.style.display = 'block';
+                            console.log(6);
+                        }
+                    }
+                }else{
+                    break;
+                }
+            }else{
+                break;
+            }
+        }
+        stepY = y;
+        for(var i=0;i<15;i++){
+            stepY--;
+            if(stepY>=0){
+                if(oPoints.children[stepY].children[x].tag===tag){
+                    if(tag==='w'){
+                        w++;
+                        if(w===5){
+                            oP.innerText = 'WHITE WIN!';
+                            oResult.style.display = 'block';
+                            console.log(7);
+                        }
+                    }else{
+                        b++;
+                        if(b===5){
+                            oP.innerText = 'BLACK WIN!';
+                            oResult.style.display = 'block';
+                            console.log(8);
+                        }
+                    }
+                }else{
+                    tag_reset();
+                    break;
+                }
+            }else{
+                tag_reset();
+                break;
+            }
+        }
+        // 对角线检测
+        stepY = y;
+        stepX = x;
+        for(var i=0;i<15;i++){
+            stepY++;
+            stepX++;
+            // console.log(stepX,stepY);
+            if(stepY<15 && stepX<15){
+                if(oPoints.children[stepY].children[stepX].tag===tag){
+                    if(tag==='w'){
+                        w++;
+                        if(w===5){
+                            oP.innerText = 'WHITE WIN!';
+                            oResult.style.display = 'block';
+                            console.log(9);
+                        }
+                    }else{
+                        b++;
+                        if(b===5){
+                            oP.innerText = 'BLACK WIN!';
+                            oResult.style.display = 'block';
+                            console.log(10);
+                        }
+                    }
+                }else{
+                    break;
+                }
+            }else{
+                break;
+            }
+        }
+        stepY = y;
+        stepX = x;
+        for(var i=0;i<15;i++){
+            stepY--;
+            stepX--;
+            if(stepY>=0&&stepX>=0){
+                if(oPoints.children[stepY].children[stepX].tag===tag){
+                    if(tag==='w'){
+                        w++;
+                        if(w===5){
+                            oP.innerText = 'WHITE WIN!';
+                            oResult.style.display = 'block';
+                            console.log(11);
+                        }
+                    }else{
+                        b++;
+                        if(b===5){
+                            oP.innerText = 'BLACK WIN!';
+                            oResult.style.display = 'block';
+                            console.log(12);
+                        }
+                    }
+                }else{
+                    tag_reset();
+                    break;
+                }
+            }else{
+                tag_reset();
+                break;
+            }
+        }
+        // 反对角线检测
+        stepY = y;
+        stepX = x;
+        for(var i=0;i<15;i++){
+            stepY++;
+            stepX--;
+            if(stepY<15 && stepX>=0){
+                if(oPoints.children[stepY].children[stepX].tag===tag){
+                    if(tag==='w'){
+                        w++;
+                        if(w===5){
+                            oP.innerText = 'WHITE WIN!';
+                            oResult.style.display = 'block';
+                            console.log(13);
+                        }
+                    }else{
+                        b++;
+                        if(b===5){
+                            oP.innerText = 'BLACK WIN!';
+                            oResult.style.display = 'block';
+                            console.log(14);
+                        }
+                    }
+                }else{
+                    break;
+                }
+            }else{
+                break;
+            }
+        }
+        stepY = y;
+        stepX = x;
+        for(var i=0;i<15;i++){
+            stepY--;
+            stepX++;
+            if(stepY>=0&&stepX<15){
+                if(oPoints.children[stepY].children[stepX].tag===tag){
+                    if(tag==='w'){
+                        w++;
+                        if(w===5){
+                            oP.innerText = 'WHITE WIN!';
+                            oResult.style.display = 'block';
+                            console.log(15);
+                        }
+                    }else{
+                        b++;
+                        if(b===5){
+                            oP.innerText = 'BLACK WIN!';
+                            oResult.style.display = 'block';
+                            console.log(16);
+                        }
+                    }
+                }else{
+                    tag_reset();
+                    break;
+                }
+            }else{
+                tag_reset();
+                break;
+            }
+        }
+    }
+
+    // 游戏重置
+    function game_clear() {
+        for(var i=0;i<15;i++) {
+            for(var j=0;j<15;j++){
+                oPoints.children[i].children[j].innerHTML = '';
+                oPoints.children[i].children[j].onoff = true;
+                oPoints.children[i].children[j].tag = '';
+                flag = true;
+                arr = [];
+                backup = [];
+                num=0;
+            }
+        }
+        tag_reset();
+        oResult.style.display = 'none';
+    }
+
+    function tag_reset(){
+        w=1;
+        b=1;
+    }
+
+    oReset.onclick = function(){
+        game_clear();
+    }
+    oAgain.onclick = function(){
+        game_clear();
+    }
+    oBack.onclick = function(){
+        if(!num){
+            alert('没有可以悔的棋！');
+        }else{
+            var temp_x = arr[num-1][0];
+            var temp_y = arr[num-1][1];
+            // console.log(temp_x,temp_y);
+            var obj = oPoints.children[temp_y].children[temp_x];
+            // 将悔掉的棋子信息保存，放入回收站
+            contents.push([obj.innerHTML,obj.tag]);
+            backup.push(arr[num-1]);
+            // console.log(contents);
+            // 情况棋盘上的棋子
+            obj.innerHTML = '';
+            obj.tag = '';
+            obj.onoff = true;
+            flag = !flag;
+            // console.log(backup);
+            // arr也删除悔掉的棋子数据
+            arr.pop();
+            num--;
+        }
+    }
+
+    cancel.onclick = function(){
+        var tmp_num = backup.length;
+        console.log(tmp_num);
+        if(!tmp_num){
+            alert('没有可以撤销的悔棋！');
+        }else{
+            // 从回收站中拿到悔掉的棋子信息
+            var temp_x = backup[tmp_num-1][0];
+            var temp_y = backup[tmp_num-1][1];
+            var obj = oPoints.children[temp_y].children[temp_x];
+            obj.innerHTML = contents[tmp_num-1][0];
+            obj.tag = contents[tmp_num-1][1];
+            obj.onoff = false;
+            flag = !flag;
+            // 将悔掉的棋子信息重新加入到arr
+            arr.push(backup[tmp_num-1]);
+            // 从回收站中删除
+            contents.pop();
+            backup.pop();
+            num++;
+        }
+    }
+
+</script>
+</html>
