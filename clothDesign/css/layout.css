@@ -1,0 +1,288 @@
+@charset "utf-8";
+.header .h-top ul em {
+	display: inline-block;
+	width: 19px;
+	height: 12px;
+	margin-top: -2px;
+	margin-right: 7px;
+	background-image: url('../images/vi_icon.png');
+	background-repeat: no-repeat;
+	vertical-align: middle;
+}
+.h-top > ul li a:hover {
+	color: #d8b056;
+}
+.h-top li.language em {
+	background-position: -10px 0;
+}
+.h-top li.description em {
+	background-position: -75px 0;
+}
+.h-top li.client em {
+	background-position: -95px 0;
+}
+
+
+
+
+.h-top li.aftermarket em {
+	height: 18px;
+	margin-right: 0;
+	background-position: -123px 0;
+}
+.h-top li.aftermarket:hover  em {
+	background-position: -38px -45px;
+}
+.h-top li.brand em {
+	height: 18px;
+	margin-right: 0;
+	background-position: -22px -19px;
+}
+.h-top li.brand:hover em {
+	background-position: -81px -42px;
+}
+
+/* logo-style */
+li.logo:hover ul.cloth, li.language:hover ul.l-lists, li.aftermarket:hover ul.service {
+	display: block;
+}
+ul.cloth, ul.l-lists {
+	position: absolute;
+	top: 40px;;
+	left: 0;
+	display: none;
+	background: #13181E;
+}
+ul.cloth li a, ul.l-lists li a {
+	display: block;
+	line-height: 30px;
+}
+ul.cloth li {
+	width: 150px;
+	text-indent: 10px;
+}
+ul.cloth li.clothe {
+	padding-top: 5px;
+}
+.header .h-top ul.cloth li em {
+	width: 13px;
+	height: 14px;
+	background-image: url('../images/icons.png');
+	background-repeat: no-repeat;
+}
+ul.cloth li.clothe em {
+	background-position: -58px -417px;
+}
+ul.cloth li.clothe:hover em {
+	background-position: -79px -417px;
+}
+ul.cloth li.bag em {
+	background-position: 0px -205px;
+}
+ul.cloth li.bag:hover em {
+	background-position: 0px -221px;
+}
+ul.cloth li.shoe em {
+	background-position: -17px -205px;
+}
+ul.cloth li.shoe:hover em {
+	background-position: -17px -221px;
+}
+ul.cloth li.jewelry em {
+	background-position: -35px -205px;
+}
+ul.cloth li.jewelry:hover em {
+	background-position: -35px -221px;
+}
+ul.cloth li.home em {
+	background-position: -54px -205px;
+}
+ul.cloth li.home:hover em {
+	background-position: -54px -221px;
+}
+ul.cloth li.official em {
+	background-position: -71px -205px;
+}
+ul.cloth li.official:hover em {
+	background-position: -71px -221px;
+}
+ul.cloth li.classroom em {
+	background-position: -88px -205px;
+}
+ul.cloth li.classroom:hover em {
+	background-position: -88px -221px;
+}
+/* language-style */
+
+ul.l-lists li.korean em {
+	height: 16px;
+	background-position: -36px 0px;	
+}
+ul.l-lists li.english em {
+	background-position: -59px 0px;	
+}
+
+/* aftermarket-style */
+ul.service {
+	position: absolute;
+	top: 40px;
+	right: -1px;
+	display: none;
+	width: 205px;
+	background-color: #13181e;	
+	font-weight: bold;
+	text-indent: 10px;
+}
+ul.service span {
+	margin-left: 10px;
+	font-size: 12px;
+}
+.h-top ul.service li.phone1 em {
+	background-position: 0px -166px;	
+}
+.h-top ul.service li.phone2 em {
+	background-position: -19px -166px;	
+}
+ul.service li.btn div {
+	width: 185px;
+	height: 35px;
+	margin-left: 10px;
+	margin-bottom: 10px;
+	border-radius: 4px;
+	background-color: #fff;
+	color: #D8B056;
+}
+ul.service li.btn div:hover {
+	background-color: #D8B056;
+}
+ul.service li.btn div em {
+	background-position: -38px -168px;
+}
+
+/* h-nav-style-em */
+.h-nav ul li {
+	position: relative;
+}
+.h-nav ul li em {
+	display: inline-block;
+	width: 17px;
+	height: 17px;
+	margin-top: -2px;
+	margin-right: 5px;
+	background-image: url('../images/vi_icon.png');
+	background-repeat: no-repeat;
+	vertical-align: middle;
+}
+.h-nav ul li.switch:hover > a {
+	color: #d8b056;
+}
+.h-nav ul li.switch:hover em {
+	background-position: 0 -195px;
+}
+.h-nav ul li.switch em {
+	background-position: 0 -146px;
+}
+.h-nav ul li.trend:hover {
+}
+.h-nav ul li.pop em {
+	background-position: -23px -146px;
+}
+.h-nav ul li.invention em {
+	background-position: -47px -146px;
+}
+.h-nav ul li.design em {
+	background-position: -69px -146px;
+}
+.h-nav ul li.point em {
+	background-position: -93px -146px;
+}
+
+.h-nav ul.h-n-lists {
+	display: none;
+	position: absolute;
+	top: 60px;
+	z-index: 1;
+	width: 120px;
+	padding-left: 0px;
+	background-color: #fff;
+	border: 1px solid #ccc;
+}
+.h-nav ul li:hover ul.h-n-lists {
+	display: block;
+}
+.h-nav li.width98 > ul.h-n-lists {
+	left: -8px;
+}
+.h-nav li.width76 > ul.h-n-lists {
+	left: -25px;
+}
+.h-nav li.width48 > ul.h-n-lists {
+	left: -36px;
+}
+.h-nav ul.h-n-lists li {
+	width: 120px;
+	text-align: center;
+	text-indent: 0px;
+}
+.h-nav ul.h-n-lists li a {
+	display: block;
+	color: #3e3e3e;
+	line-height: 35px;
+}
+.h-nav ul.h-n-lists li a:hover {
+	color: #d8b056;
+}
+.h-nav ul.h-n-lists li.l-end {
+	text-indent: 10px;
+	background-color: #d8b056;
+}
+.h-nav ul.h-n-lists li.l-end:hover {
+	background-color: #f4cb69;
+}
+.h-nav ul.h-n-lists li.l-end:hover a {
+	color: #3e3e3e;
+}
+.h-nav ul.h-n-lists li.l-end em {
+	background-position: -118px -146px;
+}
+
+/* content c-header */
+/* .content .c-header {
+	width: 623px;
+	margin: auto;
+} */
+
+/* .timer {
+	transition: .3s;
+} */
+.hover {
+	overflow: hidden;
+}
+.hover > i {
+	position: absolute;
+	top: 15px;
+	right: -100px;
+	width: 30px;
+	height: 18px;
+	background-image: url('../images/slogan_jian_tou.png');
+	background-repeat: no-repeat;
+}
+.hover > i.black-arrow {
+	background: url('../images/n_icon.png') no-repeat -77px -162px;
+}
+.hover > a, .hover > i {
+	transition: .3s;
+}
+.hover:hover > a {
+	margin-left: -50px;
+}
+.hover:hover > i {
+	right: 44px;
+}
+
+a.right10 {
+	transition: .3s;
+}
+a.right10:hover {
+	margin-right: 10px;
+}
