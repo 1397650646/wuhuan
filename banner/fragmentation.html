@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>wh-38-39js-轮播</title>
+    <meta name="description" content="">
+    <meta name="Author" content="wuhuan">
+    <meta name="keywords" content="">
+    <link href="" rel="stylesheet">
+    <style>
+        *{margin: 0;padding: 0;}
+        body{font:16px/1.5 'Microsoft Yahei';}
+        .clearfix:after{content:'';display:block;clear:both;}
+        .fl{float:left;}
+        .fr{float:right;}
+
+        #wrap{
+            width:1130px;
+            overflow:hidden;
+            height:500px;
+            margin:auto;
+            position: relative;
+
+        }
+        #banner li{
+            list-style: none;
+            position: absolute;
+            top:0;
+            display:none;
+        }
+        #banner li.on{
+            display: block;
+        }
+        #mark {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            /*background-color: rgba(0,0,0,0.5);*/
+        }
+        #mark li {
+            list-style: none;
+            float: left;
+        }
+        #wrap ol{
+            position: absolute;
+            width:240px;
+            bottom:0;
+            left:50%;
+            margin-left:-120px;
+            user-select: none;
+
+        }
+        #wrap ol li{
+            display:inline-block;
+            height:5px;
+            width:30px;
+            margin:2px;
+            background: rgba(0,0,0,0.5);
+            cursor:pointer;
+        }
+        #wrap ol li.on{
+            background: #f00;
+        }
+        #wrap span{
+            position: absolute;
+            width:60px;
+            height:50px;
+            text-decoration: none;
+            background: rgba(0,0,0,0.5);
+            color:#fff;
+            font-size:50px;
+            text-align: center;
+            line-height:40px;
+            top:50%;
+            margin-top:-25px;
+            cursor: pointer;
+            user-select: none;
+        }
+        #wrap span.next{
+            right:0px;
+        }
+        #wrap span:hover{
+            background: rgba(0,0,0,0.3);
+        }
+
+    </style>
+</head>
+<body>
+    <div id="wrap">
+        <ul id="banner">
+            <li class='on'><img src="images/1.webp" alt=""></li>
+            <li><img src="images/2.webp" alt=""></li>
+            <li><img src="images/3.webp" alt=""></li>
+            <li><img src="images/4.jpg" alt=""></li>
+            <li><img src="images/5.jpg" alt=""></li>
+            <li><img src="images/6.jpg" alt=""></li>
+        </ul>
+        <ul id="mark" class="clearfix"></ul>
+        <ol>
+            <li class='on'></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ol>
+
+        <span class='prev'> < </span>
+        <span class='next'> > </span>
+
+
+    </div>
+</body>
+<script src='js/jquery-3.3.1.min.js'></script>
+<script type="text/javascript">
+    $(function(){
+        var $banner_aLi = $('ul#banner li'),
+            $banner_aImg = $('ul#banner li img'),
+            $tab_aLi = $('ol li'),
+            $mark = $('#mark').eq(0),
+            $wrap = $('#wrap').eq(0),
+            $btn = $('span');
+        var w_num = 15,
+            h_num = 10;
+        var w = $mark.width()/w_num,
+            h = $mark.height()/h_num;
+        var num = 0;
+        var src;
+        var timer;
+        var timerB;
+        var arr = [];
+
+        $tab_aLi.click(function() {
+            $tab_aLi.eq(num).removeClass('on');
+            $banner_aLi.eq(num).removeClass('on');
+            src = $banner_aImg.eq(num).attr('src');
+            createLi();
+            num = $(this).index();
+            $tab_aLi.eq(num).addClass('on');
+            $banner_aLi.eq(num).addClass('on');
+        });
+
+        $btn.click(function(event) {
+            $tab_aLi.eq(num).removeClass('on');
+            $banner_aLi.eq(num).removeClass('on');
+            src = $banner_aImg.eq(num).attr('src');
+            createLi();
+            if($(this).index()==4){
+                console.log($(this).index());
+                num++;
+                num = num%$banner_aLi.length;
+            }else{
+                num--;
+                num=num<0?$banner_aLi.length-1:num;
+            }
+            $tab_aLi.eq(num).addClass('on');
+            $banner_aLi.eq(num).addClass('on');
+        });
+
+
+        function auto(){
+            timerB = setInterval(function(){
+                $tab_aLi.eq(num).removeClass('on');
+                $banner_aLi.eq(num).removeClass('on');
+                src = $banner_aImg.eq(num).attr('src');
+                createLi();
+                num++;
+                num = num%$banner_aLi.length;
+
+                $tab_aLi.eq(num).addClass('on');
+                $banner_aLi.eq(num).addClass('on');
+            },3000)
+        }
+        auto();
+
+        $wrap.mouseenter(function() {
+            $mark.empty();
+            clearInterval(timer);
+            clearInterval(timerB);
+        });
+        $wrap.mouseleave(function() {
+            $mark.empty();
+            clearInterval(timer);
+            auto();
+        });
+
+
+
+
+
+
+        function createLi() {
+            $mark.empty();
+            clearInterval(timer);
+            for (var i=0;i<h_num;i++) {
+                for (var j=0;j<w_num;j++) {
+                    var $oLi = $('<li></li>');
+                    $oLi.css({
+                        width:w,
+                        height:h,
+                        transition:'1s',
+                        backgroundImage:'url('+ src +')',
+                        backgroundPosition:-(w*j)+'px '+(-h*i)+'px'
+
+                    });
+                    $mark.append($oLi);
+                    $oLi.css({
+                        left:$oLi.position().left,
+                        top:$oLi.position().top,
+                    });
+                    arr.push($oLi);
+                }
+            }
+            $mark.children().each(function(index, el) {
+                $(el).css('position','absolute');
+            });
+
+            timer = setInterval(function(){
+
+                var index = Math.floor( Math.random()*arr.length );
+                $(arr[index]).css({
+                    transform:'translate('+(Math.random()*5*w-2.5*w) +'px,'+(Math.random()*5*h-2.5*h)+'px) rotate(60deg) skew(45deg) scale(0.5) '
+                }).fadeOut();
+                arr.splice(index,1);
+
+                if(arr.length == 0) {
+                    clearInterval(timer);
+                }
+            },1000/60);
+        }
+    })
+
+
+
+
+
+
+</script>
+</html>
