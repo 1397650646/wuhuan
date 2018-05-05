@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>折叠菜单</title>
+<meta name="Author" content="wuhuan">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link href="" rel="stylesheet">
+    <style>
+        *{margin: 0;padding: 0;}
+        body{font:16px/1.5 'Microsoft Yahei';}
+        .clearfix:after{content:'';display:block;clear:both;}
+        .fl{float:left;}
+        .fr{float:right;}
+        #wrap{
+            width:200px;
+            margin:50px auto;
+            perspective: 800px; /*视距*/
+            position: relative;
+        }
+        #wrap h3{
+            background: #ccc;
+            line-height: 40px;
+            position: relative;
+            z-index:9;
+        }
+        #wrap a{
+            display:block;
+            line-height: 40px;
+            background:#30B7CE;
+            margin-bottom:2px;
+            text-decoration: none;
+            color:#fff;
+        }
+        #wrap div{
+            position: absolute;
+            width:100%;
+            transform-style: preserve-3d; /*打造3D环境*/
+            transform-origin:top;/*以顶部为旋转中心*/
+            transition:1s;
+            transform:rotateX(-50deg);
+        }
+        #wrap div.on{
+            animation:rotate 1s ease both;
+        }
+        #wrap div.reverse{
+            animation:rever 1s ease both;
+        }
+
+        @keyframes rotate{/*放下*/
+            0%{ transform:rotateX(-120deg); }
+            25%{ transform:rotateX(60deg); }
+            50%{ transform:rotateX(-30deg); }
+            75%{
+                transform:rotateX(15deg);
+                box-shadow:inset 0 0 10px 5px #000;
+             }
+            100%{ transform:rotateX(0deg); }
+        }
+        @keyframes rever{/*收起来*/
+            0%{ transform:rotateX(0deg); }
+            25%{
+                transform:rotateX(15deg);
+                box-shadow:inset 0 0 10px 5px #000;
+             }
+            50%{ transform:rotateX(-30deg); }
+            75%{ transform:rotateX(60deg); }
+            100%{ transform:rotateX(-120deg); }
+
+        }
+
+
+    </style>
+</head>
+<body>
+    <div id="wrap">
+        <h3>折叠菜单</h3>
+        <div >
+            <a href="javascript:void(0)"> item1 </a>
+            <div >
+                <a href="javascript:void(0)"> item2 </a>
+                <div '>
+                  <a href="javascript:void(0)"> item3 </a>
+                  <div>
+                        <a href="javascript:void(0)"> item4 </a>
+                        <div>
+                            <a href="javascript:void(0)"> item5 </a>
+                            <div>
+                                <a href="javascript:void(0)"> item6 </a>
+                                <div>
+                                    <a href="javascript:void(0)"> item7 </a>
+                                    <div>
+                                      <a href="javascript:void(0)"> item8 </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</body>
+    <script scr='js/jquery-3.2.1.js'></script>
+    <script>
+        var oWrap = document.getElementById('wrap');
+        var oH3 = oWrap.getElementsByTagName('h3')[0];
+        var oItem = oWrap.getElementsByTagName('div');
+        var timer;
+        var onoff = true;
+        var  index = 0;
+
+        oH3.onclick = function(){
+
+
+            if(onoff){//放下
+                timer = setInterval(function(){
+                    oItem[index].className = 'on';
+                    index++;
+                    if(index == oItem.length){
+                        clearInterval(timer);
+                    }
+                },1000/10)
+
+            }else{//收起来
+                timer = setInterval(function(){
+                    index--;//oItem.length-1
+                    oItem[index].className = 'reverse';
+                    if(index == 0){
+                        clearInterval(timer);
+                    }
+                },1000/10)
+
+            }
+
+            onoff = !onoff;
+
+
+        }
+
+
+
+    </script>
+</html>
