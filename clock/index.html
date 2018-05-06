@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>时钟滚动</title>
+    <meta name="description" content="">
+    <meta name="Author" content="wuhuan">
+    <meta name="keywords" content="">
+    <link href="" rel="stylesheet">
+    <style>
+        * {margin: 0; padding: 0;}
+        #box  {
+            width: 400px;
+            padding: 20px;
+            margin: 50px auto;
+            border: 1px solid #ccc;
+            font-size: 0;
+        }
+        span {
+            position: relative;
+            display: inline-block;
+            margin-right: 10px;
+            width: 41px;
+            height: 61px;
+            overflow: hidden;
+        }
+        img {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="box">
+        <span><img src="" alt=""><img src="" alt=""></span>
+        <span><img src="" alt=""><img src="" alt=""></span>
+        <span style="background-image: url('images/d.png'); width: 15px"></span>
+        <span><img src="" alt=""><img src="" alt=""></span>
+        <span><img src="" alt=""><img src="" alt=""></span>
+        <span style="background-image: url('images/d.png'); width: 15px"></span>
+        <span><img src="" alt=""><img src="" alt=""></span>
+        <span><img src="" alt=""><img src="" alt=""></span>
+    </div>
+</body>
+<script type="text/javascript">
+    var aSpan = document.getElementsByTagName('span');
+    var aImg = document.getElementsByTagName('img');
+    src = ['images/0.png','images/1.png','images/2.png','images/3.png','images/4.png','images/5.png','images/6.png','images/7.png','images/8.png','images/9.png'];
+        // 获取初始时间，并将每位数取出来
+        var time = new Date();
+        var hour = time.getHours();
+        var min = time.getMinutes();
+        var sec = time.getSeconds();
+        var a0 = parseInt(hour/10);
+        var a1 = hour%10;
+        var a2 = parseInt(min/10);
+        var a3 = min%10;
+        var a4 = parseInt(sec/10);
+        var a5 = sec%10;
+        aImg[1].src = src[a0];
+        aImg[3].src = src[a1];
+        aImg[5].src = src[a2];
+        aImg[7].src = src[a3];
+        aImg[9].src = src[a4];
+        aImg[11].src = src[a5];
+
+    setInterval(function () {
+        time = new Date();
+        hour = time.getHours();
+        min = time.getMinutes();
+        sec = time.getSeconds();
+        // 对hour中的十位进行操作
+        if (a0!==parseInt(hour/10)) {// 判断十位上的数是否发生变化，如果发生变化，才会触发图片的切换
+            if ( parseInt(hour/10) ) {// 判断该位置上的数是否是0
+                aImg[0].src = src[parseInt(hour/10-1)];
+                aImg[1].src = src[parseInt(hour/10)];
+            } else { // 如果是0，则上一个数就是2（该位置最大数为2）
+                aImg[0].src = src[2];
+                aImg[1].src = src[0];
+            }
+            move (aImg[0],'top',0,-61,500);
+            move (aImg[1],'top',61,0,500);
+            a0 = parseInt(hour/10);// 记录该前位置的当前值
+        }
+        // 对hour中的个位进行操作
+        if (a1!==hour%10) {
+            if ( hour%10 ) {
+                aImg[2].src = src[hour%10-1];
+                aImg[3].src = src[hour%10];
+            } else if (a0==0){
+                aImg[2].src = src[3];
+                aImg[3].src = src[0];
+            } else if (a0==1||a0==2) {
+                aImg[2].src = src[9];
+                aImg[3].src = src[0];
+            }
+            move (aImg[2],'top',0,-61,500);
+            move (aImg[3],'top',61,0,500);
+            a1 = parseInt(hour%10);
+        }
+        // 对min中的十位进行操作
+        if (a2!==parseInt(min/10)) {
+            if ( parseInt(min/10) ) {
+                aImg[4].src = src[parseInt(min/10-1)];
+                aImg[5].src = src[parseInt(min/10)];
+            } else {
+                aImg[4].src = src[5];
+                aImg[5].src = src[0];
+            }
+            move (aImg[4],'top',0,-61,500);
+            move (aImg[5],'top',61,0,500);
+            a2 = parseInt(min/10);
+        }
+        // 对min中的个位进行操作
+        if (a3!==min%10) {
+            if ( min%10 ) {
+                aImg[6].src = src[min%10-1];
+                aImg[7].src = src[min%10];
+            } else {
+                aImg[6].src = src[9];
+                aImg[7].src = src[0];
+            }
+            move (aImg[6],'top',0,-61,500);
+            move (aImg[7],'top',61,0,500);
+            a3 = min%10;
+        }
+        // 对sec中的十位进行操作
+        if (a4!==parseInt(sec/10)) {
+            if ( parseInt(sec/10) ) {
+                aImg[8].src = src[parseInt(sec/10-1)];
+                aImg[9].src = src[parseInt(sec/10)];
+            } else {
+                aImg[8].src = src[5];
+                aImg[9].src = src[0];
+            }
+            move (aImg[8],'top',0,-61,500);
+            move (aImg[9],'top',61,0,500);
+            a4 = parseInt(sec/10);
+        }
+        // 对sec中的个位进行操作
+        if (a5!==sec%10) {
+            if ( sec%10 ) {
+                aImg[10].src = src[sec%10-1];
+                aImg[11].src = src[sec%10];
+            } else {
+                aImg[10].src = src[9];
+                aImg[11].src = src[0];
+            }
+            move (aImg[10],'top',0,-61,500);
+            move (aImg[11],'top',61,0,500);
+            a5 = sec%10;
+        }
+
+    },1000);
+
+
+
+    function move (obj,attr,init,target,during) {
+        var init = parseFloat(init);
+        target = parseFloat(target);
+        var time = new Date();
+        var value;
+        var timer;
+
+        (function fn () {
+
+            var current = new Date() - time;
+            var prop = current/during;
+
+            if ( prop > 1 ) {
+                prop = 1;
+                window.cancelAnimationFrame(timer);
+            } else {
+                window.requestAnimationFrame(fn);
+            }
+
+            value = ( target-init )*prop;
+
+            obj.style[attr] = init+value + 'px';
+        })();
+    }
+
+    function getStyle (obj,attr) {
+        return window.getComputedStyle?window.getComputedStyle(obj)[attr]:obj.currentStyle[attr];
+    }
+</script>
+</html>
