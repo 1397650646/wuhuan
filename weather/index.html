@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>weather</title>
+<meta name="Anthor" content="wuhuan" />
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link href="" rel="stylesheet">
+    <style>
+        *{margin: 0;padding: 0;}
+        body{font:14px/1.5 'Microsoft Yahei';}
+        .clearfix:after{content:'';display:block;clear:both;}
+        .fl{float:left;}
+        .fr{float:right;}
+        #weather{
+            width:500px;
+            min-height:500px;
+            border:1px solid #ccc;
+            margin:50px auto;
+            padding:10px;
+        }
+        #weather .pic{
+            display: block;
+            margin: auto;
+            width: 100px;
+            height: 100px;
+        }
+        #weather .search{
+            text-align: center;
+        }
+        #weather .search input[type='text']{
+            width:200px;
+            height:40px;
+            text-indent: 10px;
+            outline:none;
+        }
+        #weather .search input[type='button']{
+            width:50px;
+            height:40px;
+            border:none;
+            background:#3BB2C3;
+            color:#fff;
+            outline:none;
+
+        }
+        #weather ul li{
+            list-style: none;
+            user-select: none;
+        }
+        .city {
+            margin-top: 15px;
+            margin-bottom: 15px;
+            text-align : center;
+        }
+        .week {
+            display: inline-block;
+            float: right;
+            /*margin-left: 175px;*/
+        }
+        .date_y {
+            display: inline-block;
+            float: right;
+        }
+        ul li i {
+            display: block;
+            content: "";
+            clear: both;
+        }
+        .temperature {
+            text-align : center;
+            font-size: 40px;
+            font-weight: bold;
+        }
+        .weather,.wind,.dressing_index {
+            text-align: center;
+            font-size: 12px;
+        }
+        .wind span {
+            display: block;
+            padding: 3px;
+            margin: auto;
+            width: 70px;
+            background-color: #ccc;
+            border-radius: 5px;
+        }
+        .dressing_advice {
+            margin-top: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="weather">
+       <div class="search">
+            <input type="text">
+            <input type="button" value='查询'>
+       </div>
+       <ul>
+           <li>
+                <div class="city"><span>苏州</span></div>
+<!--                 <div class="week"> <span>星期日</span> </div>
+                <div class="date_y"> <span>2018年05月06日</span> </div>
+                <i></i> -->
+                <img src="images/00.jpg" alt="天气" class="pic">
+                <div class="temperature"><span>18℃~25℃</span></div>
+                <div class="weather"><span>大雨转小雨-中雨</span></div>
+                <div class="wind"><span>东北风4-5级</span></div>
+                <div class="dressing_index"><span>舒适</span></div>
+                <div class="dressing_advice">出行建议: <span></span></div>
+           </li>
+       </ul>
+
+
+
+    </div>
+
+
+
+    <script>
+        var aInp = document.getElementsByTagName('input');
+        var weather = document.getElementById('weather');
+        var item = weather.querySelectorAll('ul li div');
+        var oPic = weather.querySelectorAll('ul li .pic');
+        // 点击查询，显示天气信息
+        aInp[1].onclick = function(){
+            get();
+        }
+
+        // 当焦点在输入框内，按回车键，也会显示天气信息
+        aInp[0].onfocus = function() {
+            console.log('ok');
+            document.onkeydown = function(e) {
+                e = e || window.event;
+                if(e.keyCode === 13) {
+                    get();
+                }
+            }
+        }
+
+        // 输入框失去焦点后，按键失效
+        aInp[0].onblur = function() {
+            document.onkeydown = null;
+        }
+
+        // 跨域获取天气信息
+        function get() {
+            var val =  aInp[0].value;
+            if(!val){ return false;}
+            var script = document.createElement('script');
+            script.src = 'http://v.juhe.cn/weather/index?cityname='+val+'&dtype=jsonp&callback=handle&format=&key=1d11096f897b31da9a158eab51f8063b';
+            document.body.appendChild(script);
+            script.onload = function() {
+                document.body.removeChild(script);
+                script = null;
+            }
+        }
+
+
+        // 将获取的天气信息加入到页面
+        function handle(data){
+            var data = data.result.today;
+            console.log(data)
+            for(var i=0;i<item.length;i++){
+                item[i].firstElementChild.innerText =  data[ item[i].className ];
+            }
+            var weatherId =data.weather_id.fa;
+            oPic[0].src = 'images/'+ weatherId +'.jpg';
+        }
+
+
+
+
+
+
+
+    </script>
+</body>
+
+</html>
