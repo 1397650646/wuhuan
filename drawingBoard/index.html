@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>自定义画板</title>
+    <meta name="description" content="">
+    <meta name="Author" content="wuhuan">
+    <meta name="keywords" content="">
+    <link href="" rel="stylesheet">
+    <style>
+        * {margin: 0; padding: 0;}
+        ul {list-style: none;}
+        #wrap {
+            margin: 50px auto;
+        }
+        #option {
+            height: 50px;
+            background-color: #efefef;
+            text-align: center;
+            line-height: 50px;
+        }
+        #size, #opacity {
+            width: 60px;
+            height: 20px;
+            text-align: center;
+        }
+        #line-color, #bg-color {
+            width: 30px;
+        }
+        button {
+            width: 50px;
+            height: 30px;
+        }
+        #box {
+            position: relative;
+            margin: auto;
+            height: 500px;
+            border: 1px solid #ccc;
+            overflow: hidden;
+        }
+        ul li {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrap">
+        <div id="option">
+            <input id="size" type="text" placeholder="size">
+            <input id="line-color" type="color">
+            <input id="bg-color" type="color">
+            <input id="opacity" type="text" placeholder="opacity">
+            <button>后退</button>
+        </div>
+        <div id="box"></div>
+    </div>
+
+</body>
+<script type="text/javascript" src="js/my.js"></script>
+<script type="text/javascript">
+    var aInput = document.getElementsByTagName('input');
+    var oBtn = document.getElementsByTagName('button')[0];
+    var oBox = document.getElementById('box');
+
+
+    addEvent(oBox,'mousedown',fn); // 添加鼠标按下事件
+    var l = oBox.offsetLeft;
+    var t = oBox.offsetTop;
+    var h = oBox.clientHeight;
+    var w = oBox.clientWidth;
+    var r = 10;// 墨点的直径
+    var opa = 1;// 墨点的透明度
+    var lineC = '#000'; // 墨点的颜色
+        // console.log(l,t);
+
+    function fn (e) {
+        for (var i=0;i<aInput.length;i++) {// 当鼠标按在画板上时，选项框失去焦点
+            aInput[i].blur();
+        }
+        var X = e.clientX;// 获取鼠标按下的坐标
+        var Y = e.clientY;
+        addEvent(oBox,'mousemove',move);
+        var ul = document.createElement('ul');// 每次鼠标按下时，会生成一个新的ul，为了方便后面的后退按钮
+        oBox.appendChild(ul);
+
+        function move (e) {
+            // 通过鼠标所在的坐标，计算出以该坐标为圆心的圆的left及top值
+            difX = e.clientX - l - r/2;
+            difY = e.clientY - t - r/2;
+            // console.log(difX,difY);
+            // console.log(e.clientX,e.clientY);
+            if (difX<=w&&difY<=h) {// 只有在画板范围内才有效
+                li = document.createElement('li');
+                li.style.left = difX + 'px';
+                li.style.top = difY + 'px';
+                li.style.width = r + 'px';
+                li.style.height = r + 'px';
+                li.style.opacity = opa;
+                li.style.backgroundColor = lineC;
+                ul.appendChild(li);
+            }
+
+        }
+        addEvent(document,'mouseup',up);
+        function up () {
+            removeEvent(oBox,'mousemove',move);
+            removeEvent(document,'mouseup',up);
+        }
+    }
+
+    // 点击后退按钮，移除当前最新的ul
+    oBtn.onclick = function () {
+        var aUl = document.getElementsByTagName('ul');
+        if (aUl.length>=1) {
+            oBox.removeChild(aUl[aUl.length-1]);
+        }
+
+    }
+
+    // 控制墨点大小
+    aInput[0].onchange = function () {
+        if (!isNaN(parseInt(this.value))) {
+            r = Math.abs(parseInt(this.value));
+        }
+    }
+    // 控制墨点的颜色
+    aInput[1].onchange = function () {
+        lineC = this.value;
+    }
+    // 控制画板的背景色
+    aInput[2].onchange = function () {
+        oBox.style.backgroundColor = this.value;
+    }
+    // 控制墨点的透明度
+    aInput[3].onchange = function () {
+        if (!isNaN(parseFloat(this.value))) {
+            if (parseFloat(this.value)<=1&&parseFloat(this.value)>=0) {
+                opa = parseFloat(this.value);
+            }else {
+                opa = 1;
+            }
+        }
+    }
+</script>
+</html>

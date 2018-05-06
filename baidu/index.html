@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>baidu_search</title>
+ <meta name="Author" content="wuhuan">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link href="" rel="stylesheet">
+    <style>
+        *{margin: 0;padding: 0;}
+        body{font:14px/1.5 'Microsoft Yahei';}
+        .clearfix:after{content:'';display:block;clear:both;}
+        .fl{float:left;}
+        .fr{float:right;}
+        #wrap{
+            text-align:center;
+            margin:50px auto;
+            padding:10px;
+        }
+        #wrap .search{
+            width:680px;
+            margin:auto;
+            text-align: center;
+            position: relative;
+        }
+
+        #wrap .search input[type='text']{
+            width:550px;
+            height:40px;
+            text-indent: 10px;
+            border:1px solid #ccc;
+            outline:none;
+        }
+        #wrap .search input[type='text']:focus{
+            border:1px solid #3385ff;
+        }
+        #wrap .search input[type='button']{
+            padding:0 15px;
+            height:42px;
+            border:none;
+            background:#3385ff;
+            color:#fff;
+            outline:none;
+            border-bottom: 1px solid #2d78f4;
+            cursor:pointer;
+
+        }
+        #wrap .search input[type='button']:hover{
+            background: #317ef3;
+        }
+        #wrap .search i{
+            width:20px;
+            height:20px;
+            position: absolute;
+            background:no-repeat url('./images/caption.png') right 0;
+            right:140px;
+            top:50%;
+            margin-top:-10px;
+         }
+        #wrap .search i:hover{
+            width:20px;
+            height:20px;
+            position: absolute;
+            background:no-repeat url('./images/caption.png') right -20px;
+            right:140px;
+            top:50%;
+            margin-top:-10px;
+         }
+        #wrap .search ul{
+            width:550px;
+            position: absolute;
+            top:40px;
+            display: none;
+            z-index: -1;
+            text-align: left;
+            border:1px solid #ccc;
+        }
+        #wrap .search ul li{
+            list-style: none;
+        }
+        #wrap .search ul li div{
+            text-indent: 10px;
+            cursor: pointer;
+        }
+        #wrap .search ul li div:hover{
+            background-color: #ccc;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="wrap">
+        <img width='300' src="https://www.baidu.com/img/bd_logo1.png" alt="">
+       <div class="search clearfix">
+            <input class='fl' type="text">
+            <i></i>
+            <input class='fl' type="button" value='百度一下'>
+            <ul>
+               <li>
+                    <div class="">javascript</div>
+                    <div class="">javascript</div>
+                    <div class="">javascript</div>
+                    <div class="">javascript</div>
+                    <div class="">javascript</div>
+               </li>
+           </ul>
+       </div>
+
+
+
+
+    </div>
+
+
+
+    <script>
+
+        var oWrap= document.getElementById('wrap');
+        var aInp = oWrap.getElementsByTagName('input');
+        var oUl = oWrap.querySelector('ul');
+        var aItem = oWrap.querySelectorAll('ul li div');
+        var script;
+        // 加载后，默认焦点
+        aInp[0].focus();
+
+        aInp[1].onclick = go;
+
+        // 搜索
+        function go(){
+            window.open('https://www.baidu.com/s?ie=utf-8&newi=1&mod=11&isbd=1&isid=dca8db20000004c9&wd='+ aInp[0].value +'&rsv_spt=1&rsv_iqid=0x9f8f1cfa0000031d&issp=1&f=8&rsv_bp=1&rsv_idx=2&ie=utf-8&rqlang=cn&tn=baiduhome_pg&rsv_enter=1&oq=12%2526lt%253B06&rsv_t=57c1Ev45lOVLr1hGgljTKGSGFPK3LjS1K5GwdV4UMvCt%2BZ29sUC46NYfn%2Biur7cWJiqg&rsv_pq=dca8db20000004c9&rsv_sug3=5&bs=12306&rsv_sid=1453_21089_20927&_ss=1&clist=23919995d7bce975&hsug=&csor=3&pstg=5&_cr1=31760','_self');
+        }
+
+        //键盘抬起
+        aInp[0].onkeyup = myGet;
+        aInp[0].onfocus = function(){
+            myGet();
+            // 按下回车搜索
+            document.onkeydown = function(e) {
+                e = e || window.event;
+                if(e.keyCode === 13) {
+                    go();
+                }
+            }
+
+        };
+        // 失去焦点
+        aInp[0].onblur = function(){
+            setTimeout(function(){
+                oUl.style.display = 'none';
+            },200)
+
+        }
+
+        // 根据输入内容显示相关信息
+        function myGet(){
+            var value = aInp[0].value; //输入框中的值
+            var d = new Date().getTime();//当前毫秒数
+            // console.log(value);
+
+            if(!script){
+                 script = document.createElement('script');
+            }
+
+
+             //请求数据
+            script.src = 'https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd='+value+'&jsonp=1&p=3&sid=1469_21105_22159&bs=hello&pbs=hello&csor=10&pwd=javascrip&cb='+success.name+'&date='+d;
+
+            //写入页面
+            document.body.appendChild( script );
+
+            //请求数据加载完毕就删除script标签
+            script.onload = function(){
+                 document.body.removeChild(script);
+                 script = null;
+
+            }
+            // console.log(aItem);
+            for(var i=0;i<aItem.length;i++){
+                console.log(aItem)
+                aItem[i].onclick = function(){
+                    var text = this.innerText;
+                    //console.log(1);
+                    window.open('https://www.baidu.com/s?ie=utf-8&newi=1&mod=11&isbd=1&isid=dca8db20000004c9&wd='+ text +'&rsv_spt=1&rsv_iqid=0x9f8f1cfa0000031d&issp=1&f=8&rsv_bp=1&rsv_idx=2&ie=utf-8&rqlang=cn&tn=baiduhome_pg&rsv_enter=1&oq=12%2526lt%253B06&rsv_t=57c1Ev45lOVLr1hGgljTKGSGFPK3LjS1K5GwdV4UMvCt%2BZ29sUC46NYfn%2Biur7cWJiqg&rsv_pq=dca8db20000004c9&rsv_sug3=5&bs=12306&rsv_sid=1453_21089_20927&_ss=1&clist=23919995d7bce975&hsug=&csor=3&pstg=5&_cr1=31760','_self');
+                }
+            }
+
+        }
+
+
+        //success( );
+
+        function success(data){
+
+            oUl.style.display = 'block';
+            console.log(data)
+            data = data.s;
+            // console.log(data)
+            //console.log(aItem.length );
+            var len = Math.min(aItem.length,data.length);
+
+
+            for(var i=0;i<aItem.length;i++){
+                if(i<len){
+                    aItem[i].style.display = 'block';
+                    aItem[i].innerHTML = data[i];
+                }else{
+                    aItem[i].style.display = 'none';
+                }
+
+            }
+
+        }
+
+
+
+
+    </script>
+
+</body>
+
+</html>
