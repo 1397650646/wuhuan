@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>elasticBall</title>
+    <meta name="description" content="">
+    <meta name="Author" content="wuhuan">
+    <meta name="keywords" content="">
+    <link href="" rel="stylesheet">
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        body{background:#555;font-size:20px;}
+        #box{width:100px;height:100px;position: absolute;background-color: green;border-radius: 50%;}
+
+
+
+
+    </style>
+</head>
+<body>
+    <div id="box"></div>
+</body>
+<script type="text/javascript" src="js/my.js"></script>
+<script type="text/javascript">
+    var oBox = document.getElementById('box');
+
+    var max_l = window.innerWidth - oBox.offsetWidth;// 小球运动X轴的最大值
+    var max_t = window.innerHeight - oBox.offsetHeight;// 小球运动Y轴的最大值
+
+    var timer_y,timer_x;// X、Y轴方向运动定时器
+
+
+    addEvent(oBox,'mousedown',down);
+
+    function down (e) {
+        clearInterval(timer_x);
+        clearInterval(timer_y);
+        e = e || window.event;
+        var dis_x = 0,dis_y = 0;// 用来保存小球被甩出去的速度
+        var done = false;// 用来判断小球是否还能从地上弹起，false表示还能弹
+        var init_l = oBox.offsetLeft;// 初始left值
+        var init_t = oBox.offsetTop;// 初始top值
+        var init_x = new_x = e.clientX;// 鼠标的初始坐标
+        var init_y = new_y = e.clientY;
+
+        addEvent(document,'mousemove',move);
+        function move (e) {
+            e = e || window.event;
+            dis_x = e.clientX-new_x;
+            dis_y = e.clientY-new_y;
+
+            // var currentL = e.clientX - init_x + init_l;
+            // var currentT = e.clientY - init_y + init_t;
+            var currentL = dis_x + oBox.offsetLeft;
+            var currentT = dis_y + oBox.offsetTop;
+            new_x = e.clientX;
+            new_y = e.clientY;
+            // 边界检测
+            if (currentL <= 0) {
+                currentL = 0;
+            }else if (currentL >= max_l) {
+                currentL = max_l;
+            }
+            if (currentT <= 0) {
+                currentT = 0;
+            }else if (currentT >= max_t) {
+                currentT = max_t;
+            }
+
+            oBox.style.left = currentL + 'px';
+            oBox.style.top = currentT + 'px';
+        }
+        addEvent(document,'mouseup',up);
+        var v_y = 1,v_x=0;// 小球的初始速度
+        var new_t,new_l;
+        function up (e) {
+            // console.log(dis_x,dis_y);
+            v_y += dis_y;// 将甩出去的速度赋给小球
+            v_x += dis_x*0.4;
+
+            removeEvent(document,'mousemove',move);// 清除鼠标移动事件
+            removeEvent(document,'mouseup',up);// 清除鼠标抬起事件
+            // x轴方向的运动定时器
+            timer_x = setInterval(function () {
+                if (new_l >= max_l) {// 碰到边界时，速度反向
+                    v_x = -v_x;
+                }else if (new_l <= 0) {
+                    v_x = -v_x;
+                }
+                v_x=oBox.offsetTop<max_t?v_x:v_x*0.95;// 碰到地面时，速度有衰减
+                new_l = oBox.offsetLeft + v_x;
+                // 边界检测
+                if (new_l <=0) {
+                    oBox.style.left = 0;
+                }else if (new_l>=max_l) {
+                    oBox.style.left = max_l + 'px';
+                }else {
+                    oBox.style.left = new_l + 'px';
+                }
+            },1000/60);
+            // y轴方向的运动定时器
+            timer_y = setInterval(function () {
+                // console.log(v_y);
+                if (v_y > 0 ) {
+                    // 小球下落时，如果落到地面的速度小于1，则认为小球不会再弹起，此时清除计时器
+                    if (new_t >= max_t) {
+
+                        if (Math.abs(v_y)<1) {
+                            clearInterval(timer_y);
+                            done = true;
+                            // console.log('ok');
+                        }else {
+                            // 当小球碰到地面时，速度反向且速度有所衰减
+                            v_y = -v_y*0.9 ;
+                            // console.log('反向');
+                        }
+                    }else {
+                        // 下落时，速度会增大
+                        v_y = v_y/0.9;
+                    }
+                }else if ( Math.abs(v_y)<1) {
+                        v_y = -v_y;
+                        // console.log('xialuo');
+                }else if (oBox.offsetTop <=0){
+                    v_y = -v_y;
+                }else {
+                    // 上升时，速度会减小
+                    v_y *= 0.9;
+                }
+                new_t = oBox.offsetTop + v_y;
+
+                oBox.style.top = done?max_t + 'px':new_t + 'px';
+            },1000/70);
+
+        }
+    }
+</script>
+</html>
